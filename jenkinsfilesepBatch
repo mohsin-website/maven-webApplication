@@ -10,15 +10,14 @@ node('wallmart-node'){
   echo "JOB Name ${env.JOB_NAME}"
   
   
-def mavenHome = tool name: "maven3.8.3"
+def mavenHome = tool name: "maven3.8.4"
 
 properties([buildDiscarder(logRotator(artifactDaysToKeepStr: '', artifactNumToKeepStr: '5', daysToKeepStr: '', numToKeepStr: '5')), [$class: 'JobLocalConfiguration', changeReasonComment: ''], pipelineTriggers([pollSCM('* * * * *')])])
 
 
 
 stage('CheckOutCode'){
-git branch: 'development', credentialsId: '9aad10da-e742-413a-a2f6-ce6a8b007f70', url: 'https://github.com/VedhaTechnologiesDevOps/maven-web-application.git'
-}
+git branch: 'main', credentialsId: '2f282f38-bca1-4385-b189-e1b3dd6082ef', url: 'https://github.com/mohsin-website/maven-webApplication.git' 
 
 stage('Build'){
 sh "${mavenHome}/bin/mvn clean package"
@@ -34,7 +33,7 @@ sh "mvn deploy"
 
 stage('DeployAppintoTomcatServer'){
 sshagent(['dd147e39-1f55-4554-9700-b10dc494211f']) {
-  sh "scp -o StrictHostKeyChecking=no target/maven-webApplication.war ec2-user@13.233.201.155:/opt/apache-tomcat-9.0.54/webapps/"
+  sh "scp -o StrictHostKeyChecking=no target/maven-webApplication.war ec2-user@13.233.201.155:/opt/apache-tomcat-9.0.102/webapps/"
 }
 }
 
